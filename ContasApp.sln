@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContasApp.Presentation", "ContasApp.Presentation\ContasApp.Presentation.csproj", "{9A6C96F2-F076-43E4-8101-F482EA074A7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContasApp.Presentation", "ContasApp.Presentation\ContasApp.Presentation.csproj", "{9A6C96F2-F076-43E4-8101-F482EA074A7A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Presetation Layer", "1 - Presetation Layer", "{A576DC62-25BA-4AB0-98DE-8FD7709E4A21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Data Access Layer", "2 - Data Access Layer", "{B145F877-660B-4D8F-BFD1-0AA9892E7D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContasApp.Data", "ContasApp.Data\ContasApp.Data.csproj", "{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +21,17 @@ Global
 		{9A6C96F2-F076-43E4-8101-F482EA074A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A6C96F2-F076-43E4-8101-F482EA074A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A6C96F2-F076-43E4-8101-F482EA074A7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9A6C96F2-F076-43E4-8101-F482EA074A7A} = {A576DC62-25BA-4AB0-98DE-8FD7709E4A21}
+		{6221F6D1-82F1-408C-8EB7-3A4FB4F0DECE} = {B145F877-660B-4D8F-BFD1-0AA9892E7D99}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8080976E-C869-4A53-AC94-EEDB0F885D25}
