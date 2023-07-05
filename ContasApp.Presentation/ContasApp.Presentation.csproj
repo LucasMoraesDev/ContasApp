@@ -11,4 +11,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ContasApp.Data\ContasApp.Data.csproj" />
+  </ItemGroup>
+
 </Project>
