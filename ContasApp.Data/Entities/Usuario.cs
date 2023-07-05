@@ -13,7 +13,7 @@ namespace ContasApp.Data.Entities
     {
         #region Atributos
         private Guid _id;
-        private string? _name;
+        private string? _nome;
         private string? _email;
         private string? _senha;
         private DateTime _dataHoraCriacao;
@@ -22,7 +22,7 @@ namespace ContasApp.Data.Entities
 
         #region Propriedades
         public Guid Id { get => _id; set => _id = value; }
-        public string? Name { get => _name; set => _name = value; }
+        public string? Nome { get => _nome; set => _nome = value; }
         public string? Email { get => _email; set => _email = value; }
         public string? Senha { get => _senha; set => _senha = value; }
         public DateTime DataHoraCriacao { get => _dataHoraCriacao; set => _dataHoraCriacao = value; }

@@ -26,7 +26,8 @@ namespace ContasApp.Data.Repositories
                     ID,
                     NOME,
                     EMAIL,
-                    DATAHORACRIAÇÃO)
+                    SENHA,
+                    DATAHORACRIACAO)
                 VALUES(
                     @Id,
                     @Nome,
