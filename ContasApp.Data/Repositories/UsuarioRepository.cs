@@ -32,7 +32,7 @@ namespace ContasApp.Data.Repositories
                     @Id,
                     @Nome,
                     @Email,
-                    @Senha,
+                    CONVERT(VARCHAR(32),  HASHBYTES('MD5', @Senha), 2),
                     @DataHoraCriacao)
              ";
 
@@ -53,8 +53,7 @@ namespace ContasApp.Data.Repositories
             var query = @"
                 UPDATE USUARIO SET
                     NOME = @Nome,
-                    EMAIL = @Email,
-                    SENHA = @Senha
+                    EMAIL = @Email
                 WHERE
                     ID = @Id
                 ";
@@ -64,6 +63,27 @@ namespace ContasApp.Data.Repositories
             {
                 //executando o comando SQL no banco de dados
                 connection.Execute(query, usuario);
+            }
+        }
+
+        /// <summary>
+        /// Método para atualizar somente a senha do usuário
+        /// </summary>
+        /// <param name="idUsuario"></param>
+        /// <param name="senha"></param>
+        public void UpdatePassword(Guid idUsuario, string senha)
+        {
+            var query = @"
+                UPDATE USUARIO
+                SET
+                    SENHA = CONVERT(VARCHAR(32), HASHBYTES('MD5', @Senha), 2)
+                WHERE
+                    IDUSUARIO = @IdUsuario
+             ";
+
+            using (var connection = new SqlConnection(SqlServerSettings.GetConnectionString()))
+            {
+                connection.Execute(query, new { @IdUsuario = idUsuario, @Senha = senha });
             }
         }
 
@@ -130,7 +150,7 @@ namespace ContasApp.Data.Repositories
         public Usuario? GetByEmailAndSenha(string email, string senha)
         {
             var query = @"
-                SELECT * FROM USUARIO WHERE EMAIL = @Email AND SENHA = @Senha
+                SELECT * FROM USUARIO WHERE EMAIL = @Email AND SENHA = CONVERT(VARCHAR(32), HASHBYTES('MD5', @Senha), 2)
              ";
 
             //abrindo conexão com o banco de dados..

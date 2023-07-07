@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h5>Cadastro de contas</h5>
+<p>Faça o cadastro das suas contas para gerenciar suas finanças.</p>
+<hr />
+
+<form>
+
+    <div class="row mb-2">
+        <div class="col">
+            <label>Nome da conta:</label>
+            <input type="text" class="form-control" />
+        </div>
+        <div class="col">
+            <label>Data da conta:</label>
+            <input type="date" class="form-control" />
+        </div>
+        <div class="col">
+            <label>Valor da conta:</label>
+            <input type="text" class="form-control" />
+        </div>
+        <div class="col">
+            <label>Tipo da conta:</label>
+            <div>
+                <input type="radio" name="tipo" /> Conta a Receber
+            </div>
+            <div>
+                <input type="radio" name="tipo" /> Conta a Pagar
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col">
+            <label>Selecione a categoria da conta:</label>
+            <select class="form-select">
+                <option value="">Escolha uma opção</option>
+            </select>
+        </div>
+        <div class="col">
+            <label>Observações conta:</label>
+            <textarea class="form-control"></textarea>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col">
+            <input type="submit" class="btn btn-success" value="Realizar Cadastro" />
+        </div>
+    </div>
+
+</form>
+
+

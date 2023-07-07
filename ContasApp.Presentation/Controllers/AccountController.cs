@@ -19,6 +19,41 @@ namespace ContasApp.Presentation.Controllers
         }
 
         /// <summary>
+        /// Método para capturar o SUBMIT POST da página /Account/Login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Login(AccountLoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //consultando o usuário no banco de dados através do email e da senha
+                    var usuarioRepository = new UsuarioRepository();
+                    var usuario = usuarioRepository.GetByEmailAndSenha(model.Email, model.Senha);
+
+                    //verificando se o usuário foi encontrado
+                    if (usuario != null)
+                    {
+                        //redirecionando para a outra página
+                        return RedirectToAction("Index", "Home"); 
+                    }
+                    else
+                    {
+                        TempData["Mensagem"] = "Acesso negado. Usuário inválido";
+                    }
+                }
+                catch (Exception e)
+                {
+                    TempData["Mensagem"] = e.Message;
+                }
+            }
+            return View();
+        }
+
+        /// <summary>
         /// Método para abrir a página /Account/Register
         /// </summary>
         public IActionResult Register()
@@ -34,20 +69,31 @@ namespace ContasApp.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 try
                 {
-                    var usuario = new Usuario();
-                    usuario.Id = Guid.NewGuid();
-                    usuario.Nome = model.Nome;
-                    usuario.Email = model.Email;
-                    usuario.Senha = model.Senha;
-                    usuario.DataHoraCriacao = DateTime.Now;
-
-                    //gravando o usuário no banco de dados
                     var usuarioRepository = new UsuarioRepository();
-                    usuarioRepository.Add(usuario);
+                    if (usuarioRepository.GetByEmail(model.Email) != null)
+                    {
+                        TempData["Mensagem"] = "O email informado já está cadastrado, por favor tente outro.";
 
-                    TempData["Mensagem"] = "Parabéns, sua conta de usuário foi cadastrada com sucesso!";
+                    }
+                    else
+                    {
+                        var usuario = new Usuario();
+                        usuario.Id = Guid.NewGuid();
+                        usuario.Nome = model.Nome;
+                        usuario.Email = model.Email;
+                        usuario.Senha = model.Senha;
+                        usuario.DataHoraCriacao = DateTime.Now;
+
+                        //gravando o usuário no banco de dados
+
+                        usuarioRepository.Add(usuario);
+
+                        TempData["Mensagem"] = "Parabéns, sua conta de usuário foi cadastrada com sucesso!";
+                    }
+
                 }
                 catch (Exception e)
                 {
