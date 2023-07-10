@@ -1,7 +1,11 @@
 ﻿using ContasApp.Data.Entities;
 using ContasApp.Data.Repositories;
 using ContasApp.Presentation.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace ContasApp.Presentation.Controllers
 {
@@ -21,11 +25,10 @@ namespace ContasApp.Presentation.Controllers
         /// <summary>
         /// Método para capturar o SUBMIT POST da página /Account/Login
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         [HttpPost]
         public IActionResult Login(AccountLoginViewModel model)
         {
+            //verificando se todos os campos passaram nas regras de validação
             if (ModelState.IsValid)
             {
                 try
@@ -37,12 +40,28 @@ namespace ContasApp.Presentation.Controllers
                     //verificando se o usuário foi encontrado
                     if (usuario != null)
                     {
-                        //redirecionando para a outra página
-                        return RedirectToAction("Index", "Home"); 
+                        //gravar o cookie no navegador com os dados do usuário autenticado
+                        //este cookie irá gerar a autorização do usuário para acessar as 
+                        //páginas restritas do sistema [Authorize]
+
+                        //serializando o objeto usuário para JSON
+                        var json = JsonConvert.SerializeObject(usuario);
+
+                        //criando a identificação do usuário no Asp.NET
+                        var claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, json) },
+                            CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        //gravando os dados no Cookie de autenticação do Asp.Net
+                        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                        //redirecionamento para outra página
+                        //HOME -> Controller, Index -> View (Home/Index)
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        TempData["Mensagem"] = "Acesso negado. Usuário inválido";
+                        TempData["Mensagem"] = "Acesso negado. Usuário inválido.";
                     }
                 }
                 catch (Exception e)
@@ -50,6 +69,7 @@ namespace ContasApp.Presentation.Controllers
                     TempData["Mensagem"] = e.Message;
                 }
             }
+
             return View();
         }
 
@@ -67,39 +87,39 @@ namespace ContasApp.Presentation.Controllers
         [HttpPost] //Receber o SUBMIT POST do formulário
         public IActionResult Register(AccountRegisterViewModel model)
         {
+            //verificar se todos os campos passaram nas regras de validação
             if (ModelState.IsValid)
             {
-
                 try
                 {
                     var usuarioRepository = new UsuarioRepository();
                     if (usuarioRepository.GetByEmail(model.Email) != null)
                     {
                         TempData["Mensagem"] = "O email informado já está cadastrado, por favor tente outro.";
-
                     }
                     else
                     {
+                        //capturando os dados do usuário
                         var usuario = new Usuario();
+
                         usuario.Id = Guid.NewGuid();
                         usuario.Nome = model.Nome;
                         usuario.Email = model.Email;
                         usuario.Senha = model.Senha;
                         usuario.DataHoraCriacao = DateTime.Now;
 
-                        //gravando o usuário no banco de dados
-
+                        //gravando o usuário no banco de dados                   
                         usuarioRepository.Add(usuario);
 
                         TempData["Mensagem"] = "Parabéns, sua conta de usuário foi cadastrada com sucesso!";
                     }
-
                 }
                 catch (Exception e)
                 {
                     TempData["Mensagem"] = e.Message;
                 }
             }
+
             return View();
         }
 
@@ -109,6 +129,19 @@ namespace ContasApp.Presentation.Controllers
         public IActionResult ForgotPassword()
         {
             return View();
+        }
+
+        /// <summary>
+        /// Método para fazer o logout do usuário no sistema
+        /// /Account/Logout
+        /// </summary>
+        public IActionResult Logout()
+        {
+            //apagar o cookir de autenticação gravado no navegador
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            //redirecionar o usuário de volta para a página de login
+            return RedirectToAction("Login");
         }
     }
 }
