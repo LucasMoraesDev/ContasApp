@@ -1,4 +1,9 @@
-﻿@{
+﻿@using ContasApp.Data.Entities
+
+@* Definindo a classe de modelo de dados da página *@
+@model ContasApp.Presentation.Models.ContasConsultaViewModel
+
+@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -6,14 +11,20 @@
 <p>Informe um período de datas para consultar suas contas:</p>
 <hr />
 
-<form>
-
+@using (Html.BeginForm())
+{
     <div class="row mb-2">
         <div class="col">
-            <input type="date" class="form-control" />
+            @Html.TextBoxFor(model => model.DataInicio, new { @class = "form-control", @type = "date" })
+            <span class="text-danger">
+                @Html.ValidationMessageFor(model => model.DataInicio)
+            </span>
         </div>
         <div class="col">
-            <input type="date" class="form-control" />
+            @Html.TextBoxFor(model => model.DataFim, new { @class = "form-control", @type = "date" })
+            <span class="text-danger">
+                @Html.ValidationMessageFor(model => model.DataFim)
+            </span>
         </div>
         <div class="col">
             <div>
@@ -28,30 +39,48 @@
         </div>
     </div>
 
-    <div class="table-responsive mb-2">
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Tipo</th>
-                    <th>Nome da conta</th>
-                    <th>Categoria</th>
-                    <th>Operações</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6">
-                        Quantidade de contas obtidas: 0
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-</form>
+    @if (ViewBag.Contas != null && ViewBag.Contas.Count > 0)
+    {
+        <div class="table-responsive mb-2">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Tipo</th>
+                        <th>Nome da conta</th>
+                        <th>Categoria</th>
+                        <th>Operações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.Contas as List<Conta>)
+                    {
+                        <tr>
+                            <td>@item.Data.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Valor.ToString("c")</td>
+                            <td>
+                                @if (item.Tipo == 1)
+                                {
+                                    <span class="badge bg-success">CONTA A RECEBER</span>
+                                }
+                                else if (item.Tipo == 2)
+                                {
+                                    <span class="badge bg-danger">CONTA A PAGAR</span>
+                                }
+                            </td>
+                            <td>@item.Nome</td>
+                            <td></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">Editar</button>
+                                <button class="btn btn-sm btn-danger">Excluir</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
 
 

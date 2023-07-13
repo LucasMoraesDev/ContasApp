@@ -10,12 +10,12 @@ namespace ContasApp.Data.Entities
     {
         #region Atributos
         private Guid _id;
-        private string? _descrição;
+        private string? _descricao;
         #endregion
 
         #region Propriedades
         public Guid Id { get => _id; set => _id = value; }
-        public string? Descrição { get => _descrição; set => _descrição = value; }
+        public string? Descricao { get => _descricao; set => _descricao = value; }
         #endregion
     }
 }
