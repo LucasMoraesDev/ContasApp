@@ -13,7 +13,8 @@
     <title>ContasApp - controle financeiro</title>
 
     <!-- bibliotecas CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/dataTables.min.css" />
 </head>
 <body>
 
@@ -90,6 +91,27 @@
 
     <!-- bibliotecas JavaScript -->
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <script src="/js/dataTables.min.js"></script>
+    <script src="/js/highcharts.js"></script>
+
+    <!-- seção para que outras páginas possam inserir conteudo JavaScript -->
+    @RenderSection("scripts", required: false)
+
+    <!-- função para ativar o jquery datatables -->
+    <script>
+        //executar quando a página for aberta..
+        $(document).ready(function () {
+            //procurando o elemento HTML que contém a class='datatable'
+            //e então aplicar a formatação do jquery datatables
+            $(".datatable").DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.5/i18n/pt-BR.json',
+                }
+            });
+        })
+    </script>
+
 </body>
 </html>
 

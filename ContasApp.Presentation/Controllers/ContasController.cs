@@ -74,7 +74,29 @@ namespace ContasApp.Presentation.Controllers
         /// </summary>
         public IActionResult Consulta()
         {
-            return View();
+            var model = new ContasConsultaViewModel();
+
+            try
+            {
+                var qtdDiasMesAtual = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
+
+                //primeiro dia do mês atual
+                model.DataInicio = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                model.DataFim = new DateTime(DateTime.Today.Year, DateTime.Today.Month, qtdDiasMesAtual);
+
+                //capturando o usuário autenticado no sistema
+                var usuario = JsonConvert.DeserializeObject<Usuario>(User.Identity.Name);
+
+                //consultando as contas do usuário no banco de dados
+                var contaRepository = new ContaRepository();
+                ViewBag.Contas = contaRepository.GetByDatasAndUsuario(model.DataInicio.Value, model.DataFim.Value, usuario.Id);
+            }
+            catch (Exception e)
+            {
+                TempData["MensagemErro"] = e.Message;
+            }
+
+            return View(model);
         }
 
         /// <summary>
@@ -117,11 +139,104 @@ namespace ContasApp.Presentation.Controllers
         }
 
         /// <summary>
+        /// Método para processar a ação de exclusão /Contas/Exclusao
+        /// </summary>
+        public IActionResult Exclusao(Guid id)
+        {
+            try
+            {
+                var contaRepository = new ContaRepository();
+
+                //buscando a conta no banco de dados através do ID
+                var conta = contaRepository.GetById(id);
+
+                //excluindo a conta
+                contaRepository.Delete(conta);
+
+                TempData["MensagemSucesso"] = $"Conta '{conta.Nome}', excluído com sucesso.";
+            }
+            catch (Exception e)
+            {
+                TempData["MensagemErro"] = e.Message;
+            }
+
+            //redirecionando para a página de consulta
+            return RedirectToAction("Consulta");
+        }
+
+        /// <summary>
         /// Método para abrir a página /Contas/Edicao
         /// </summary>
-        public IActionResult Edicao()
+        public IActionResult Edicao(Guid id)
         {
-            return View();
+            var model = new ContasEdicaoViewModel();
+
+            try
+            {
+                //buscar a conta no repositório através do ID
+                var contaRepository = new ContaRepository();
+                var conta = contaRepository.GetById(id);
+
+                //preencher o objeto 'model' com os dados da conta
+                model.Id = conta.Id;
+                model.Nome = conta.Nome;
+                model.Data = conta.Data;
+                model.Valor = conta.Valor;
+                model.Tipo = conta.Tipo;
+                model.Observacoes = conta.Observacoes;
+                model.CategoriaId = conta.CategoriaId;
+
+                //gerando os dados das categorias
+                ViewBag.Categorias = ObterCategorias();
+            }
+            catch (Exception e)
+            {
+                TempData["MensagemErro"] = e.Message;
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Método para capturar o SUBMIT POST da página de edição
+        /// </summary>
+        [HttpPost]
+        public IActionResult Edicao(ContasEdicaoViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var conta = new Conta
+                    {
+                        Id = model.Id,
+                        Nome = model.Nome,
+                        Data = model.Data.Value,
+                        Valor = model.Valor.Value,
+                        Tipo = model.Tipo.Value,
+                        Observacoes = model.Observacoes,
+                        CategoriaId = model.CategoriaId.Value
+                    };
+
+                    //atualizando a conta no banco de dados
+                    var contaRepository = new ContaRepository();
+                    contaRepository.Update(conta);
+
+                    TempData["MensagemSucesso"] = $"Conta '{conta.Nome}', atualizada com sucesso.";
+                    return RedirectToAction("Consulta"); //redirecionando para a página de consulta
+                }
+                catch (Exception e)
+                {
+                    TempData["MensagemErro"] = e.Message;
+                }
+            }
+            else
+            {
+                TempData["MensagemAlerta"] = "Ocorreram erros de validação no preenchimento do formulário de edição.";
+            }
+
+            ViewBag.Categorias = ObterCategorias();
+            return View(model);
         }
 
         /// <summary>
