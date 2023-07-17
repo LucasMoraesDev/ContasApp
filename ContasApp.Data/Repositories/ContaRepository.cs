@@ -71,17 +71,25 @@ namespace ContasApp.Data.Repositories
         {
             //escrevendo o comando SQL
             var query = @"
-                SELECT * FROM CONTA
-                WHERE USUARIOID = @UsuarioId
-                    AND DATA BETWEEN @DataInicio AND @Datafim
-                ORDER BY DATA DESC
+                SELECT * FROM CONTA co
+                INNER JOIN CATEGORIA ca
+                ON co.CATEGORIAID = ca.ID
+                WHERE co.USUARIOID = @UsuarioId 
+                  AND co.DATA BETWEEN @DataInicio AND @DataFim
+                ORDER BY co.DATA DESC
             ";
 
             using (var connection = new SqlConnection(SqlServerSettings.GetConnectionString()))
             {
-                return connection.Query<Conta>(query,
-                    new { @UsuarioId = usuarioId, @DataInicio = dataInicio, @DataFim = dataFim })
-                        .ToList();
+                return connection.Query(query,
+                    (Conta co, Categoria ca) =>
+                    {
+                        co.Categoria = ca;
+                        return co;
+                    },
+                    new { @UsuarioId = usuarioId, @DataInicio = dataInicio, @DataFim = dataFim },
+                    splitOn: "CategoriaId")
+                    .ToList();
             }
         }
 
@@ -99,5 +107,9 @@ namespace ContasApp.Data.Repositories
                 return connection.Query<Conta>(query, new { @Id = id }).FirstOrDefault();
             }
         }
+
     }
 }
+
+
+
