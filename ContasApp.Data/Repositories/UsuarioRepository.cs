@@ -78,7 +78,7 @@ namespace ContasApp.Data.Repositories
                 SET
                     SENHA = CONVERT(VARCHAR(32), HASHBYTES('MD5', @Senha), 2)
                 WHERE
-                    IDUSUARIO = @IdUsuario
+                    ID = @IdUsuario
              ";
 
             using (var connection = new SqlConnection(SqlServerSettings.GetConnectionString()))
