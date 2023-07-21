@@ -150,7 +150,7 @@ namespace ContasApp.Presentation.Controllers
                     if (usuario != null)
                     {
                         //gerando uma nova senha para o usuário
-                        var novaSenha = PasswordHelper.GeneratePassword(true,true,true,true,8);
+                        var novaSenha = PasswordHelper.GeneratePassword(true, true, true, true, 10);
 
                         //escrevendo o email para o usuário
                         var subject = "Recuperação de senha de usuário - COTI Informática";
@@ -202,6 +202,3 @@ namespace ContasApp.Presentation.Controllers
         }
     }
 }
-
-
-

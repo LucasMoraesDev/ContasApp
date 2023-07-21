@@ -31,6 +31,3 @@ namespace ContasApp.Data.Repositories
         }
     }
 }
-
-
-
