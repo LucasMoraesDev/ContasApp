@@ -110,6 +110,3 @@ namespace ContasApp.Data.Repositories
 
     }
 }
-
-
-
